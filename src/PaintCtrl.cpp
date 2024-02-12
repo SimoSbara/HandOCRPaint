@@ -4,6 +4,9 @@
 
 PaintCtrl::PaintCtrl(HWND pParent, int width, int height, int wPaint, int hPaint)
 {
+	if (pParent)
+		SubclassWindow(pParent);
+
 	if (width < 0)
 		width = 1;
 
@@ -16,28 +19,29 @@ PaintCtrl::PaintCtrl(HWND pParent, int width, int height, int wPaint, int hPaint
 	if (hPaint < 0)
 		hPaint = 1;
 
-	this->width = width;
-	this->height = height;
+	GetClientRect(&rectClient);
+
+	this->width = rectClient.Width();
+	this->height = rectClient.Height();
 	this->wPaint = wPaint;
 	this->hPaint = hPaint;
 
-	if (pParent)
-		SubclassWindow(pParent);
 
-	GetClientRect(&rectClient);
 
-	drawLUT = new bool* [width];
 
-	for (int x = 0; x < width; x++)
+
+	drawLUT = new bool* [this->width];
+
+	for (int x = 0; x < this->width; x++)
 	{
-		drawLUT[x] = new bool[height];
+		drawLUT[x] = new bool[this->height];
 
-		for (int y = 0; y < height; y++)
+		for (int y = 0; y < this->height; y++)
 			drawLUT[x][y] = 0;
 	}
 
-	coeffX = (double)width / (double)rectClient.Width();
-	coeffY = (double)height / (double)rectClient.Height();
+	coeffX = (double)this->width / (double)rectClient.Width();
+	coeffY = (double)this->height / (double)rectClient.Height();
 
 	CDC* pDC = this->GetDC();
 
@@ -169,8 +173,8 @@ void PaintCtrl::OnMouseMove(UINT nFlags, CPoint point)
 	if (!isPressing)
 		return;
 
-	int x = coeffX * point.x;
-	int y = coeffY * point.y;
+	int x = (int)(coeffX * (double)point.x + 0.5);
+	int y = (int)(coeffY * (double)point.y + 0.5);
 
 	for (int i = max(0, x - wPaint / 2); i <= min(width - 1, x + wPaint / 2); i++)
 		for (int j = max(0, y - hPaint / 2); j <= min(height - 1, y + hPaint / 2); j++)
@@ -203,10 +207,10 @@ void PaintCtrl::UpdateDisplay()
 		{
 			if (drawLUT[x][y])
 			{
-				point.x = x / coeffX;
-				point.y = y / coeffY;
+				point.x = x;// (int)((double)x / coeffX + 0.5);
+				point.y = y;// (int)((double)y / coeffY + 0.5);
 
-				//shadowMem.FillSolidRect(point.x - widthPaint / 2, point.y - heightPaint / 2, widthPaint, heightPaint, RGB(0, 0, 0));
+				//shadowMem.FillSolidRect(point.x - wPaint / 2, point.y - hPaint / 2, wPaint, hPaint, RGB(0, 0, 0));
 				//shadowMem.SetPixel(point, RGB(0, 0, 0));
 
 				ptr = &curBuffer[point.y * rectClient.Width() * 4 + point.x * 4];
@@ -214,7 +218,7 @@ void PaintCtrl::UpdateDisplay()
 				*ptr++ = 0;
 				*ptr++ = 0;
 				*ptr++ = 0;
-				*ptr++ = 0;
+				*ptr++ = 255;
 			}
 		}
 

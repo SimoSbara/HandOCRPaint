@@ -124,10 +124,12 @@ void CSetupDlg::OnBnClickedOk()
 	UpdateData(1);
 	theApp.ocr.LoadModel(netPath, labelsPath);
 
+	ShowWindow(0);
+
 	CHandOCRVeryfierDlg dlg;
 	dlg.DoModal();
 
-	CDialog::OnOK();
+	ShowWindow(1);
 }
 
 

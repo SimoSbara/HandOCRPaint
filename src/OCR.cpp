@@ -73,23 +73,28 @@ bool OCR::Predict(BYTE* buffer, float** scores, int& best)
 	best = bestInd;
 	*scores = probs;
 
+	delete inputNet;
+
 	return true;
 }
 
 bool OCR::StartModel(CString netPath, CString labelPath)
 {
+	if (session)
+		StopModel();
+
 	Ort::SessionOptions sessionOptions;
 
-	OrtStatus* onnxStatus = OrtSessionOptionsAppendExecutionProvider_DML(sessionOptions, 0);
-	
-	if (onnxStatus)
-	{
-		const OrtApi* g_ort = OrtGetApiBase()->GetApi(ORT_API_VERSION);
+	//OrtStatus* onnxStatus = OrtSessionOptionsAppendExecutionProvider_DML(sessionOptions, 0);
+	//
+	//if (onnxStatus)
+	//{
+	//	const OrtApi* g_ort = OrtGetApiBase()->GetApi(ORT_API_VERSION);
 
-		CString msg(g_ort->GetErrorMessage(onnxStatus));
+	//	CString msg(g_ort->GetErrorMessage(onnxStatus));
 
-		MessageBox(NULL, msg, _T("Error DirectML"), MB_OK);
-	}
+	//	MessageBox(NULL, msg, _T("Error DirectML"), MB_OK);
+	//}
 
 	sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
 

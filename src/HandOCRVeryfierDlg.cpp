@@ -8,9 +8,15 @@
 #include "HandOCRVeryfierDlg.h"
 #include "afxdialogex.h"
 
+#include <chrono>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+typedef std::chrono::high_resolution_clock Time;
+typedef std::chrono::milliseconds ms;
+typedef std::chrono::duration<float> fsec;
 
 extern CHandOCRVeryfierApp theApp;
 
@@ -142,11 +148,12 @@ void CHandOCRVeryfierDlg::OnBnClickedDetect()
 	int best = 0;
 	bool success;
 
-	INT64 start, end;
-
-	start = GetTickCount64();
+	auto start = Time::now();
 	success = theApp.ocr.Predict(img, &scores, best);
-	end = GetTickCount64();
+	auto end = Time::now();
+	
+	fsec fs = end - start;
+	ms d = std::chrono::duration_cast<ms>(fs);
 
 	if (success)
 	{
@@ -155,7 +162,7 @@ void CHandOCRVeryfierDlg::OnBnClickedDetect()
 
 		text.Format(_T("%s %.2f"), theApp.ocr.labels[best], score);
 		text += _T("% (");
-		text += std::to_wstring(end - start).c_str();
+		text += std::to_wstring(d.count()).c_str();
 		text += "ms)";
 
 		SetWindowText(text);
