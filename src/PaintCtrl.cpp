@@ -2,16 +2,10 @@
 #include "PaintCtrl.h"
 #include "ximage.h"
 
-PaintCtrl::PaintCtrl(HWND pParent, int width, int height, int wPaint, int hPaint)
+PaintCtrl::PaintCtrl(HWND pParent, int wPaint, int hPaint)
 {
 	if (pParent)
 		SubclassWindow(pParent);
-
-	if (width < 0)
-		width = 1;
-
-	if (height < 0)
-		height = 1;	
 	
 	if (wPaint < 0)
 		wPaint = 1;
@@ -26,10 +20,6 @@ PaintCtrl::PaintCtrl(HWND pParent, int width, int height, int wPaint, int hPaint
 	this->wPaint = wPaint;
 	this->hPaint = hPaint;
 
-
-
-
-
 	drawLUT = new bool* [this->width];
 
 	for (int x = 0; x < this->width; x++)
@@ -39,9 +29,6 @@ PaintCtrl::PaintCtrl(HWND pParent, int width, int height, int wPaint, int hPaint
 		for (int y = 0; y < this->height; y++)
 			drawLUT[x][y] = 0;
 	}
-
-	coeffX = (double)this->width / (double)rectClient.Width();
-	coeffY = (double)this->height / (double)rectClient.Height();
 
 	CDC* pDC = this->GetDC();
 
@@ -57,8 +44,6 @@ PaintCtrl::PaintCtrl(HWND pParent, int width, int height, int wPaint, int hPaint
 
 PaintCtrl::~PaintCtrl()
 {
-	//UnsubclassWindow();
-
 	for (int x = 0; x < width; x++)
 	{
 		delete drawLUT[x];
@@ -173,8 +158,8 @@ void PaintCtrl::OnMouseMove(UINT nFlags, CPoint point)
 	if (!isPressing)
 		return;
 
-	int x = (int)(coeffX * (double)point.x + 0.5);
-	int y = (int)(coeffY * (double)point.y + 0.5);
+	int x = point.x;
+	int y = point.y;
 
 	for (int i = max(0, x - wPaint / 2); i <= min(width - 1, x + wPaint / 2); i++)
 		for (int j = max(0, y - hPaint / 2); j <= min(height - 1, y + hPaint / 2); j++)
@@ -207,11 +192,8 @@ void PaintCtrl::UpdateDisplay()
 		{
 			if (drawLUT[x][y])
 			{
-				point.x = x;// (int)((double)x / coeffX + 0.5);
-				point.y = y;// (int)((double)y / coeffY + 0.5);
-
-				//shadowMem.FillSolidRect(point.x - wPaint / 2, point.y - hPaint / 2, wPaint, hPaint, RGB(0, 0, 0));
-				//shadowMem.SetPixel(point, RGB(0, 0, 0));
+				point.x = x;
+				point.y = y;
 
 				ptr = &curBuffer[point.y * rectClient.Width() * 4 + point.x * 4];
 

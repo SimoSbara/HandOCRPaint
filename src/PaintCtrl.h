@@ -5,7 +5,7 @@
 class PaintCtrl : public CWnd
 {
 public:
-	PaintCtrl(HWND pParent = NULL, int width = 320, int height = 240, int wPaint = 3, int hPaint = 3);
+	PaintCtrl(HWND pParent = NULL, int wPaint = 3, int hPaint = 3);
 	~PaintCtrl();
 
 	void SaveOnFile(CString fname);
@@ -28,9 +28,6 @@ private:
 
 	int width;
 	int height;
-
-	double coeffX;
-	double coeffY;
 
 	int wPaint;
 	int hPaint;
