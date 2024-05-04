@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "OCR.h"
+#include <memory>
+
+constexpr float grayScaleNorm = 1.0f / 255.0f;
 
 OCR::OCR()
 {
@@ -33,23 +36,42 @@ bool OCR::Predict(BYTE* buffer, float** scores, int& best)
 	int imageSize = width * height * channels;
 	int inputNetSizeInBytes = imageSize * sizeof(float);
 
-	float* inputNet = new float[imageSize];
-	INT64 inputShape[4];
+	std::unique_ptr<float> inpNet(new float[imageSize]);
+	float* inputNet = inpNet.get();
 
-	inputShape[0] = 1;
-	inputShape[1] = height;
-	inputShape[2] = width;
-	inputShape[3] = channels;
+	double range = maxNorm - minNorm;
+
+	int inputS = (flatten) ? 2 : 4;
+
+	std::vector<INT64> inputShape(inputS);
+
+	if (flatten)
+	{
+		inputShape[0] = 1;
+		inputShape[1] = width * height;
+	}
+	else
+	{
+		inputShape[0] = 1;
+		inputShape[1] = height;
+		inputShape[2] = width;
+		inputShape[3] = channels;
+	}
+
+	if (invert)
+		for (int i = 0; i < imageSize; i++)
+			inputNet[i] = 255.0f - buffer[i];
+	else
+		for (int i = 0; i < imageSize; i++)
+			inputNet[i] = buffer[i];
 
 	for (int i = 0; i < imageSize; i++)
-	{
-		inputNet[i] = buffer[i] / 255.0; //lento
-	}
+		inputNet[i] = (inputNet[i] * grayScaleNorm) * range + minNorm;
 
 	Ort::Value output_tensor{nullptr};
 	Ort::MemoryInfo memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
 
-	Ort::Value input_tensor = Ort::Value::CreateTensor(memory_info, inputNet, inputNetSizeInBytes, inputShape, 4);
+	Ort::Value input_tensor = Ort::Value::CreateTensor(memory_info, inputNet, inputNetSizeInBytes, inputShape.data(), (flatten) ? 2 : 4);
 
 	char* inputNames = inputName.GetBuffer();
 	char* outputNames = outputName.GetBuffer();
@@ -61,6 +83,9 @@ bool OCR::Predict(BYTE* buffer, float** scores, int& best)
 	int bestInd = 0;
 	float bestScore = probs[0];
 
+	OutputDebugStringA("outputs\n");
+	OutputDebugStringA((std::to_string(probs[0]) + "\n").c_str());
+
 	for (int i = 1; i < numOutputs; i++)
 	{
 		if (bestScore < probs[i])
@@ -68,12 +93,12 @@ bool OCR::Predict(BYTE* buffer, float** scores, int& best)
 			bestInd = i;
 			bestScore = probs[i];
 		}
+
+		OutputDebugStringA((std::to_string(probs[i]) + "\n").c_str());
 	}
 
 	best = bestInd;
 	*scores = probs;
-
-	delete inputNet;
 
 	return true;
 }
@@ -106,6 +131,8 @@ bool OCR::StartModel(CString netPath, CString labelPath)
 
 		Ort::AllocatorWithDefaultOptions allocator;
 
+		flatten = false;
+
 		inputCount = session->GetInputCount();
 		outputCount = session->GetOutputCount();
 
@@ -115,12 +142,24 @@ bool OCR::StartModel(CString netPath, CString labelPath)
 		inputName = CStringA(session->GetInputNameAllocated(0, allocator).get());
 		auto inputShape = session->GetInputTypeInfo(0).GetTensorTypeAndShapeInfo().GetShape();
 
-		if (inputShape.size() != 4)
+		if (inputShape.size() == 2)
+			flatten = true;
+		else if (inputShape.size() != 4)
 			return false;
 
-		width = inputShape[2];
-		height = inputShape[1];
-		channels = inputShape[3];
+		if (flatten)
+		{
+			int size = sqrt(inputShape[1]); //sperando sia così
+			width = size;
+			height = size;
+			channels = 1;
+		}
+		else
+		{
+			width = inputShape[2];
+			height = inputShape[1];
+			channels = inputShape[3];
+		}
 
 		outputName = CStringA(session->GetOutputNameAllocated(0, allocator).get());
 		auto outputShape = session->GetOutputTypeInfo(0).GetTensorTypeAndShapeInfo().GetShape();

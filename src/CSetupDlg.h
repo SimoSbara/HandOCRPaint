@@ -22,8 +22,14 @@ protected:
 
 	CString netPath, labelsPath;
 
+	double minNorm, maxNorm;
+	int invertImg;
+
 	CString SelectFolder(CString title = _T(""));
 	CString SelectFile(CString title = _T(""));
+
+	void LoadParams();
+	void SaveParams();
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // supporto DDX/DDV
 	virtual BOOL OnInitDialog();

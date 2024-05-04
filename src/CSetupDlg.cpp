@@ -6,6 +6,10 @@
 #include "CSetupDlg.h"
 #include "HandOCRVeryfier.h"
 #include "HandOCRVeryfierDlg.h"
+#include "json.hpp"
+#include <fstream>
+
+using json = nlohmann::json;
 
 extern CHandOCRVeryfierApp theApp;
 
@@ -16,7 +20,9 @@ IMPLEMENT_DYNAMIC(CSetupDlg, CDialog)
 CSetupDlg::CSetupDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_SETUP_DLG, pParent)
 {
-
+	minNorm = 0;
+	maxNorm = 1;
+	invertImg = 0;
 }
 
 CSetupDlg::~CSetupDlg()
@@ -28,6 +34,10 @@ void CSetupDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_NET, netPath);
 	DDX_Text(pDX, IDC_EDIT_LABELS, labelsPath);
+	DDX_Text(pDX, IDC_EDIT_NORM_MIN, minNorm);
+	DDX_Text(pDX, IDC_EDIT_NORM_MAX, maxNorm);
+	DDX_Check(pDX, IDC_CHECK_INVERT_IMG, invertImg);
+
 }
 
 
@@ -47,11 +57,60 @@ BOOL CSetupDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-
+	LoadParams();
 
 	return TRUE;  // restituisce TRUE a meno che non venga impostato lo stato attivo su un controllo.
 }
 
+void CSetupDlg::LoadParams()
+{
+	std::ifstream i("save.json");
+
+	if (i.is_open())
+	{
+		try
+		{
+			json load;
+
+			i >> load;
+
+			std::string net = load["netPath"];
+			std::string labels = load["labelsPath"];
+			minNorm = load["minNorm"];
+			maxNorm = load["maxNorm"];
+			invertImg = load["invertImg"];
+
+			netPath = CString(net.c_str());
+			labelsPath = CString(labels.c_str());
+		}
+		catch (std::exception e)
+		{
+			//MessageBoxA(this->m_hWnd, e.what(), "", MB_OK);
+		}
+
+		UpdateData(0);
+		UpdateData(1);
+	}
+}
+
+void CSetupDlg::SaveParams()
+{
+	std::ofstream saveFile;
+	json save;
+
+	save["netPath"] = CStringA(netPath).GetBuffer();
+	save["labelsPath"] = CStringA(labelsPath).GetBuffer();
+	save["minNorm"] = minNorm;
+	save["maxNorm"] = maxNorm;
+	save["invertImg"] = invertImg;
+
+	saveFile.open("save.json", std::ios::out);
+
+	if (saveFile.is_open())
+		saveFile << save;
+
+	saveFile.close();
+}
 CString CSetupDlg::SelectFile(CString title)
 {
 	TCHAR curDir[MAX_PATH];
@@ -122,7 +181,31 @@ void CSetupDlg::OnEnChangeEditLabels()
 void CSetupDlg::OnBnClickedOk()
 {
 	UpdateData(1);
-	theApp.ocr.LoadModel(netPath, labelsPath);
+
+	if (minNorm > maxNorm)
+	{
+		double tmp = minNorm;
+		minNorm = maxNorm;
+		maxNorm = tmp;
+	}
+	else if (minNorm == maxNorm)
+	{
+		minNorm = 0;
+		maxNorm = 1;
+	}
+
+	UpdateData(0);
+	UpdateData(1);
+
+	SaveParams();
+
+	theApp.ocr.LoadParams(minNorm, maxNorm, invertImg);
+
+	if (!theApp.ocr.LoadModel(netPath, labelsPath))
+	{
+		MessageBox(_T("Error Loading Net"), _T("Error"), MB_OK);
+		return;
+	}
 
 	ShowWindow(0);
 

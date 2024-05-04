@@ -202,6 +202,7 @@
     <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\HandOCRVeryfier.h" />
     <ClInclude Include="src\HandOCRVeryfierDlg.h" />
+    <ClInclude Include="src\json.hpp" />
     <ClInclude Include="src\OCR.h" />
     <ClInclude Include="src\PaintCtrl.h" />
     <ClInclude Include="src\resource.h" />
