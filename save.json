@@ -1,1 +1,1 @@
-{"invertImg":1,"labelsPath":"H:\\Dev\\HandOCRPaint\\nets\\mnist_kan_net\\labels.txt","maxNorm":1.0,"minNorm":-1.0,"netPath":"H:\\Dev\\HandOCRPaint\\nets\\mnist_kan_net\\kanocr.onnx"}
+{"channelFirst":1,"invertImg":1,"labelsPath":"H:\\Dev\\HandOCRPaint\\nets\\mnist_kan_net\\labels.txt","maxNorm":1.0,"minNorm":-1.0,"netPath":"H:\\Dev\\HandOCRPaint\\nets\\mnist_kan_net\\kanocr.onnx"}

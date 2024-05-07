@@ -24,6 +24,7 @@ protected:
 
 	double minNorm, maxNorm;
 	int invertImg;
+	int channelFirst;
 
 	CString SelectFolder(CString title = _T(""));
 	CString SelectFile(CString title = _T(""));

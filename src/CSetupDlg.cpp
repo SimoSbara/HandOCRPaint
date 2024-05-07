@@ -37,7 +37,7 @@ void CSetupDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_NORM_MIN, minNorm);
 	DDX_Text(pDX, IDC_EDIT_NORM_MAX, maxNorm);
 	DDX_Check(pDX, IDC_CHECK_INVERT_IMG, invertImg);
-
+	DDX_Check(pDX, IDC_CHECK_CHANNEL_FIRST, channelFirst);
 }
 
 
@@ -76,12 +76,15 @@ void CSetupDlg::LoadParams()
 
 			std::string net = load["netPath"];
 			std::string labels = load["labelsPath"];
+			netPath = CString(net.c_str());
+			labelsPath = CString(labels.c_str());
+
 			minNorm = load["minNorm"];
 			maxNorm = load["maxNorm"];
 			invertImg = load["invertImg"];
+			channelFirst = load["channelFirst"];
 
-			netPath = CString(net.c_str());
-			labelsPath = CString(labels.c_str());
+
 		}
 		catch (std::exception e)
 		{
@@ -103,6 +106,7 @@ void CSetupDlg::SaveParams()
 	save["minNorm"] = minNorm;
 	save["maxNorm"] = maxNorm;
 	save["invertImg"] = invertImg;
+	save["channelFirst"] = channelFirst;
 
 	saveFile.open("save.json", std::ios::out);
 
@@ -199,7 +203,7 @@ void CSetupDlg::OnBnClickedOk()
 
 	SaveParams();
 
-	theApp.ocr.LoadParams(minNorm, maxNorm, invertImg);
+	theApp.ocr.LoadParams(minNorm, maxNorm, invertImg, channelFirst);
 
 	if (!theApp.ocr.LoadModel(netPath, labelsPath))
 	{

@@ -51,11 +51,21 @@ bool OCR::Predict(BYTE* buffer, float** scores, int& best)
 		inputShape[1] = width * height;
 	}
 	else
-	{
-		inputShape[0] = 1;
-		inputShape[1] = height;
-		inputShape[2] = width;
-		inputShape[3] = channels;
+	{	
+		if (channelFirst)
+		{
+			inputShape[0] = 1;
+			inputShape[1] = channels;
+			inputShape[2] = height;
+			inputShape[3] = width;
+		}
+		else
+		{
+			inputShape[0] = 1;
+			inputShape[1] = height;
+			inputShape[2] = width;
+			inputShape[3] = channels;
+		}
 	}
 
 	if (invert)
@@ -156,9 +166,18 @@ bool OCR::StartModel(CString netPath, CString labelPath)
 		}
 		else
 		{
-			width = inputShape[2];
-			height = inputShape[1];
-			channels = inputShape[3];
+			if (channelFirst)
+			{
+				width = inputShape[3];
+				height = inputShape[2];
+				channels = inputShape[1];
+			}
+			else
+			{
+				width = inputShape[2];
+				height = inputShape[1];
+				channels = inputShape[3];
+			}
 		}
 
 		outputName = CStringA(session->GetOutputNameAllocated(0, allocator).get());

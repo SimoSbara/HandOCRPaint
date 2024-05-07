@@ -20,11 +20,12 @@ public:
 	OCR();
 	~OCR();
 
-	void LoadParams(double min, double max, bool invert)
+	void LoadParams(double min, double max, bool invert, bool channelFirst)
 	{
 		this->minNorm = min;
 		this->maxNorm = max;
 		this->invert = invert;
+		this->channelFirst = channelFirst;
 	}
 	bool LoadModel(CString netPath, CString labelPath);
 	bool Predict(BYTE* buffer, float** scores, int &best);
@@ -59,6 +60,7 @@ private:
 	double minNorm;
 	double maxNorm;
 	bool invert;
+	bool channelFirst;
 
 	int numOutputs;
 

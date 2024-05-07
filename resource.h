@@ -20,7 +20,8 @@
 #define IDC_BROWSE_NET                  1006
 #define IDC_EDIT_NORM_MIN               1007
 #define IDC_EDIT_NORM_MAX               1008
-#define IDC_CHECK1                      1009
+#define IDC_CHECK_INVERT_IMG2           1009
+#define IDC_CHECK_CHANNEL_FIRST         1009
 
 // Next default values for new objects
 // 
