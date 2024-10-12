@@ -9,7 +9,7 @@
 #endif
 
 #include "../resource.h"		// simboli principali
-#include "OCR.h"
+#include "OCR/OCR.h"
 
 // CHandOCRVeryfierApp:
 // Per l'implementazione di questa classe, vedere HandOCRVeryfier.cpp
@@ -20,7 +20,7 @@ class CHandOCRVeryfierApp : public CWinApp
 public:
 	CHandOCRVeryfierApp();
 
-	OCR ocr;
+	OCR* ocr;
 
 // Override
 public:

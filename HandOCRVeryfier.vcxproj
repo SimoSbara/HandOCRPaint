@@ -94,12 +94,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>include/onnx;include/cximage;src/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include/onnx;include/tensorflow_lite;include/cximage;src/</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>lib/onnx;lib/cximage/debug</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>lib/tensorflow_lite;lib/onnx;lib/cximage/debug</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -169,14 +169,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>include/onnx;include/cximage</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include/onnx;include/tensorflow_lite;include/cximage</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>lib/onnx;lib/cximage/release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>lib/tensorflow_lite;lib/onnx;lib/cximage/release</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -203,7 +203,9 @@
     <ClInclude Include="src\HandOCRVeryfier.h" />
     <ClInclude Include="src\HandOCRVeryfierDlg.h" />
     <ClInclude Include="src\json.hpp" />
-    <ClInclude Include="src\OCR.h" />
+    <ClInclude Include="src\OCR\OCR.h" />
+    <ClInclude Include="src\OCR\ONNX\OCROnnx.h" />
+    <ClInclude Include="src\OCR\TFLite\OCRTFLite.h" />
     <ClInclude Include="src\PaintCtrl.h" />
     <ClInclude Include="src\resource.h" />
     <ClInclude Include="src\targetver.h" />
@@ -213,7 +215,9 @@
     <ClCompile Include="src\CSetupDlg.cpp" />
     <ClCompile Include="src\HandOCRVeryfier.cpp" />
     <ClCompile Include="src\HandOCRVeryfierDlg.cpp" />
-    <ClCompile Include="src\OCR.cpp" />
+    <ClCompile Include="src\OCR\OCR.cpp" />
+    <ClCompile Include="src\OCR\ONNX\OCROnnx.cpp" />
+    <ClCompile Include="src\OCR\TFLite\OCRTFLite.cpp" />
     <ClCompile Include="src\PaintCtrl.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

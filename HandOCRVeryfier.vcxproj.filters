@@ -1,82 +1,103 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="File di origine">
+    <Filter Include="Source">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="File di intestazione">
+    <Filter Include="Headers">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="File di risorse">
+    <Filter Include="Resources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="OCR">
+      <UniqueIdentifier>{7b751f9d-6ae8-4783-8724-0f536c2aaafc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OCR\ONNX">
+      <UniqueIdentifier>{2e96b950-19f3-452f-a143-7e89960aa6fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OCR\TFLite">
+      <UniqueIdentifier>{fa1bc8b4-9f6b-437e-b2bc-60073ae801ad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HandOCRVeryfier.rc">
-      <Filter>File di risorse</Filter>
+      <Filter>Resources</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\HandOCRVeryfier.ico">
-      <Filter>File di risorse</Filter>
+      <Filter>Resources</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\framework.h">
-      <Filter>File di intestazione</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\HandOCRVeryfier.h">
-      <Filter>File di intestazione</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\HandOCRVeryfierDlg.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="src\OCR.h">
-      <Filter>File di intestazione</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\PaintCtrl.h">
-      <Filter>File di intestazione</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\resource.h">
-      <Filter>File di intestazione</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\targetver.h">
-      <Filter>File di intestazione</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
-      <Filter>File di intestazione</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>File di intestazione</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CSetupDlg.h">
-      <Filter>File di intestazione</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\json.hpp">
-      <Filter>File di intestazione</Filter>
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OCR\OCR.h">
+      <Filter>OCR</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OCR\ONNX\OCROnnx.h">
+      <Filter>OCR\ONNX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OCR\TFLite\OCRTFLite.h">
+      <Filter>OCR\TFLite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\HandOCRVeryfier.cpp">
-      <Filter>File di origine</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\HandOCRVeryfierDlg.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OCR.cpp">
-      <Filter>File di origine</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\PaintCtrl.cpp">
-      <Filter>File di origine</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
-      <Filter>File di origine</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\CSetupDlg.cpp">
-      <Filter>File di origine</Filter>
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OCR\OCR.cpp">
+      <Filter>OCR</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OCR\ONNX\OCROnnx.cpp">
+      <Filter>OCR\ONNX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OCR\TFLite\OCRTFLite.cpp">
+      <Filter>OCR\TFLite</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

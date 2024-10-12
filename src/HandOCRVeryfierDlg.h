@@ -4,7 +4,7 @@
 
 #pragma once
 #include "PaintCtrl.h"
-#include "OCR.h"
+#include "OCR/OCR.h"
 
 
 // Finestra di dialogo CHandOCRVeryfierDlg

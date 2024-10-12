@@ -26,6 +26,8 @@ protected:
 	int invertImg;
 	int channelFirst;
 
+	CComboBox aiEngineCombo;
+
 	CString SelectFolder(CString title = _T(""));
 	CString SelectFile(CString title = _T(""));
 

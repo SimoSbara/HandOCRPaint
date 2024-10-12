@@ -7,6 +7,8 @@
 #include "HandOCRVeryfier.h"
 #include "HandOCRVeryfierDlg.h"
 #include "json.hpp"
+#include "OCR/ONNX/OCROnnx.h"
+#include "OCR/TFLite/OCRTFLite.h"
 #include <fstream>
 
 using json = nlohmann::json;
@@ -38,6 +40,7 @@ void CSetupDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_NORM_MAX, maxNorm);
 	DDX_Check(pDX, IDC_CHECK_INVERT_IMG, invertImg);
 	DDX_Check(pDX, IDC_CHECK_CHANNEL_FIRST, channelFirst);
+	DDX_Control(pDX, IDC_COMBO_AI, aiEngineCombo);
 }
 
 
@@ -57,6 +60,8 @@ BOOL CSetupDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
+	aiEngineCombo.SetCurSel(ONNX);
+
 	LoadParams();
 
 	return TRUE;  // restituisce TRUE a meno che non venga impostato lo stato attivo su un controllo.
@@ -71,6 +76,7 @@ void CSetupDlg::LoadParams()
 		try
 		{
 			json load;
+			int engine;
 
 			i >> load;
 
@@ -79,12 +85,13 @@ void CSetupDlg::LoadParams()
 			netPath = CString(net.c_str());
 			labelsPath = CString(labels.c_str());
 
-			minNorm = load["minNorm"];
-			maxNorm = load["maxNorm"];
-			invertImg = load["invertImg"];
-			channelFirst = load["channelFirst"];
+			minNorm = load.value("minNorm", minNorm);
+			maxNorm = load.value("maxNorm", maxNorm);
+			invertImg = load.value("invertImg", invertImg);
+			channelFirst = load.value("channelFirst", channelFirst);
+			engine = load.value("engine", aiEngineCombo.GetCurSel());
 
-
+			aiEngineCombo.SetCurSel(engine);
 		}
 		catch (std::exception e)
 		{
@@ -107,6 +114,7 @@ void CSetupDlg::SaveParams()
 	save["maxNorm"] = maxNorm;
 	save["invertImg"] = invertImg;
 	save["channelFirst"] = channelFirst;
+	save["engine"] = aiEngineCombo.GetCurSel();
 
 	saveFile.open("save.json", std::ios::out);
 
@@ -203,9 +211,24 @@ void CSetupDlg::OnBnClickedOk()
 
 	SaveParams();
 
-	theApp.ocr.LoadParams(minNorm, maxNorm, invertImg, channelFirst);
+	if (theApp.ocr)
+	{
+		delete theApp.ocr;
+		theApp.ocr = NULL;
+	}
 
-	if (!theApp.ocr.LoadModel(netPath, labelsPath))
+	switch (aiEngineCombo.GetCurSel())
+	{
+	case ONNX: theApp.ocr = new OCROnnx; break;
+	case TFLITE: theApp.ocr = new OCRTFLite; break;
+	}
+
+	if(!theApp.ocr)
+		MessageBox(_T("Error Loading Net"), _T("Error"), MB_OK);
+
+	theApp.ocr->LoadParams(minNorm, maxNorm, invertImg, channelFirst);
+
+	if (!theApp.ocr->LoadModel(netPath, labelsPath))
 	{
 		MessageBox(_T("Error Loading Net"), _T("Error"), MB_OK);
 		return;

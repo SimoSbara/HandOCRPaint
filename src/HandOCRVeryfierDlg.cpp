@@ -9,6 +9,7 @@
 #include "afxdialogex.h"
 
 #include <chrono>
+#include <string>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -141,15 +142,18 @@ void CHandOCRVeryfierDlg::OnBnClickedOk()
 
 void CHandOCRVeryfierDlg::OnBnClickedDetect()
 {
+	if (!theApp.ocr)
+		return;
+
 	BYTE* img = NULL;
-	paintCtrl->GetImage(&img, theApp.ocr.GetWidth(), theApp.ocr.GetHeight(), theApp.ocr.GetChannels());
+	paintCtrl->GetImage(&img, theApp.ocr->GetWidth(), theApp.ocr->GetHeight(), theApp.ocr->GetChannels());
 
 	float* scores;
 	int best = 0;
 	bool success;
 
 	auto start = Time::now();
-	success = theApp.ocr.Predict(img, &scores, best);
+	success = theApp.ocr->Predict(img, &scores, best);
 	auto end = Time::now();
 	
 	fsec fs = end - start;
@@ -160,7 +164,7 @@ void CHandOCRVeryfierDlg::OnBnClickedDetect()
 		CString text;
 		float score = scores[best] * 100.0f;
 
-		text.Format(_T("%s %.2f"), theApp.ocr.labels[best], score);
+		text.Format(_T("%s %.2f"), theApp.ocr->labels[best], score);
 		text += _T("% (");
 		text += std::to_wstring(d.count()).c_str();
 		text += "ms)";

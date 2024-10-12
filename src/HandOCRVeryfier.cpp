@@ -71,6 +71,9 @@ BOOL CHandOCRVeryfierApp::InitInstance()
 	// inserendo ad esempio il nome della società o dell'organizzazione.
 	SetRegistryKey(_T("Applicazioni locali generate tramite la Creazione guidata applicazioni"));
 
+
+	ocr = NULL;
+
 	CSetupDlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
