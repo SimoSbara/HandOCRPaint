@@ -19,9 +19,12 @@ If you are testing Sample Networks:
 
 Change these parameters according to your training data if you are testing your own network.
 
+You can choose between ONNX and Tensorflow Lite for inference.
+
 ## Libraries used:
 * [CxImage](https://www.codeproject.com/Articles/1300/CxImage) for image encoding/decoding;
 * [ONNX](https://github.com/onnx/onnx) neural network engine with DirectML.
+* [Tensorflow Lite](https://ai.google.dev/edge/litert) neural network engine.
 
 ## Requirements for Devs
 * Visual Studio 2022 with MFC
